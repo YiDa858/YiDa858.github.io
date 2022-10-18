@@ -56,7 +56,7 @@
 </ul>
 <h2 id="getallheaders"><a href="#getallheaders" class="headerlink" title="getallheaders()"></a><code>getallheaders()</code></h2><p>只能用于Apache，用于获取HTTP所有的头部信息，然后使用<code>var_dump()</code>打印或使用<code>eval()</code>执行</p>
 <p>同时在请求包中提交相应代码，具体利用方式如下</p>
-<p><img src="/./assets/image-20221011171250597-1666064723275-1.png" alt="image-20221011171250597"></p>
+<p><img src="/./../../public/img/image-20221011171250597-1666064723275-1-1666064966567-3.png" alt="image-20221011171250597-1666064723275-1"></p>
 <h2 id="get-defined-vars"><a href="#get-defined-vars" class="headerlink" title="get_defined_vars()"></a><code>get_defined_vars()</code></h2><p>使用该函数可以获得<code>$_GET</code>、<code>$_POST</code>、<code>$_FILES</code>、<code>$_COOKIE</code>等全局变量的数据</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">?code=var_dump(get_defined_vars());</span><br><span class="line"></span><br><span class="line">array(4) &#123; [&quot;_GET&quot;]=&gt; array(1) &#123; [&quot;code&quot;]=&gt; string(29) &quot;var_dump(get_defined_vars());&quot; &#125; [&quot;_POST&quot;]=&gt; array(0) &#123; &#125; [&quot;_COOKIE&quot;]=&gt; array(0) &#123; &#125; [&quot;_FILES&quot;]=&gt; array(0) &#123; &#125; &#125;</span><br></pre></td></tr></table></figure>
 
