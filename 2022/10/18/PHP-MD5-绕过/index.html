@@ -29,8 +29,7 @@
         <hr>
     </div>
     <div class="post-content">
-        <p>[TOC]</p>
-<h1 id="PHP-MD5绕过"><a href="#PHP-MD5绕过" class="headerlink" title="PHP MD5绕过"></a>PHP MD5绕过</h1><h2 id="单变量弱类型比较"><a href="#单变量弱类型比较" class="headerlink" title="单变量弱类型比较"></a>单变量弱类型比较</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="variable">$md5</span>==<span class="title function_ invoke__">md5</span>(<span class="variable">$md5</span>))&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h1 id="PHP-MD5绕过"><a href="#PHP-MD5绕过" class="headerlink" title="PHP MD5绕过"></a>PHP MD5绕过</h1><h2 id="单变量弱类型比较"><a href="#单变量弱类型比较" class="headerlink" title="单变量弱类型比较"></a>单变量弱类型比较</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="variable">$md5</span>==<span class="title function_ invoke__">md5</span>(<span class="variable">$md5</span>))&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>使用本身为<code>0e...</code>，且加密后仍为<code>0e...</code>的字符串</p>
 <p><strong>exp</strong>：0e215962017（加密后为0e291242476940776845150308577824）</p>
